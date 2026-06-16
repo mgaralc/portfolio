@@ -1,0 +1,40 @@
+@if (room(); as activeRoom) {
+  <section
+    class="room-overlay"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="activeRoom.title"
+  >
+    <header class="room-overlay__header">
+      <h2>{{ activeRoom.title }}</h2>
+      <button type="button" class="room-overlay__back" (click)="onClose()">
+        Volver
+      </button>
+    </header>
+
+    <div class="room-overlay__body">
+      @if (activeRoom.content.type === 'education') {
+        <dl class="education">
+          <dt>Institución</dt>
+          <dd>{{ activeRoom.content.institution }}</dd>
+          <dt>Título</dt>
+          <dd>{{ activeRoom.content.degree }}</dd>
+          <dt>Periodo</dt>
+          <dd>{{ activeRoom.content.period }}</dd>
+        </dl>
+        <p>{{ activeRoom.content.description }}</p>
+      } @else if (activeRoom.content.type === 'tech-museum') {
+        <ul class="tech-list">
+          @for (tech of activeRoom.content.technologies; track tech.name) {
+            <li class="tech-list__item">
+              <span class="tech-list__name">{{ tech.name }}</span>
+              <span class="tech-list__level" [attr.data-level]="tech.level">{{
+                tech.level
+              }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </section>
+}
