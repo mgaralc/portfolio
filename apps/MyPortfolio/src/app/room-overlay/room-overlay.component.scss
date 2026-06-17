@@ -58,6 +58,87 @@
   }
 }
 
+// Grab strip is mobile-only (the bottom-sheet handle); hidden on desktop.
+.room-overlay__grab {
+  display: none;
+}
+
+// --- Mobile: bottom sheet ---------------------------------------------------
+// On phones the side panel would cover the whole screen, so it becomes a bottom
+// sheet (~half height) you can drag down (or tap) to reveal the 3D zone. The
+// scene reframes the zone into the visible top half (see
+// SceneEngine.focusTargetFor). Keep the breakpoint in sync with
+// MOBILE_MAX_WIDTH in scene/constants.ts.
+@media (max-width: 700px) {
+  .room-overlay {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    max-height: 52vh;
+    padding: 0 1.15rem 1.6rem;
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.55);
+    // No fill-mode: a forwards/both animation would pin `transform` and override
+    // the inline translateY we use for the drag/collapse gesture.
+    animation: sheet-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 0.33s cubic-bezier(0.22, 1, 0.36, 1);
+    overscroll-behavior: contain;
+  }
+
+  // While the finger is down the sheet must track it 1:1 (no easing).
+  .room-overlay--dragging {
+    transition: none;
+  }
+
+  // Wide, easy-to-grab strip across the whole top edge of the sheet.
+  .room-overlay__grab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 30px;
+    padding: 12px 0 6px;
+    touch-action: none;
+    cursor: grab;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .room-overlay__grab::before {
+    content: '';
+    width: 46px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.45);
+    transition: background 0.2s, width 0.2s;
+  }
+
+  // Visual feedback: handle widens/brightens on press, accent-tinted when closed.
+  .room-overlay__grab:active::before {
+    width: 64px;
+    background: rgba(255, 255, 255, 0.75);
+  }
+
+  .room-overlay--collapsed .room-overlay__grab::before {
+    background: var(--accent);
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0.3;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .room-overlay__header {
   position: relative;
   display: flex;

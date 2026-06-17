@@ -42,6 +42,16 @@ export const DEFAULT_CAMERA_DISTANCE = SPHERE_RADIUS * 3.4;
 export const ORBIT_MIN_DISTANCE = 7;
 export const FOCUS_MIN_DISTANCE = 1;
 
+// Mobile focus framing. Phones show the overlay as a bottom sheet (~half the
+// screen), so instead of the desktop side-pan we pull the camera further back
+// (narrow portrait FOV needs more distance to fit the zone) and push the whole
+// view UP along the surface normal, seating the structure in the visible top
+// half above the sheet. Tuned by on-device screenshots, not by maths alone.
+export const FOCUS_BACK_MOBILE = 6.2;
+export const FOCUS_UP_MOBILE = 1.4;
+// Layout breakpoint shared with the overlay's CSS bottom-sheet media query.
+export const MOBILE_MAX_WIDTH = 700;
+
 // Elevated 3/4 view (looking down at ~30°) instead of a flat equatorial shot,
 // so the island reads as a small floating world rather than a flat disc.
 const DEFAULT_ELEVATION_RAD = (30 * Math.PI) / 180;

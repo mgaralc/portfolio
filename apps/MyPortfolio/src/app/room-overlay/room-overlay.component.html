@@ -5,7 +5,23 @@
     aria-modal="true"
     [attr.aria-label]="activeRoom.title"
     [style.--accent]="accent()"
+    [style.transform]="sheetTransform()"
+    [class.room-overlay--dragging]="dragging()"
+    [class.room-overlay--collapsed]="collapsed()"
   >
+    <!-- Mobile-only grab strip: drag to slide the sheet down (see the zone) or
+         tap to toggle. Wide hit area so it's easy to grab on a phone. -->
+    <div
+      class="room-overlay__grab"
+      role="button"
+      tabindex="0"
+      aria-label="Mostrar u ocultar el panel"
+      (pointerdown)="onGrabDown($event)"
+      (pointermove)="onGrabMove($event)"
+      (pointerup)="onGrabUp($event)"
+      (pointercancel)="onGrabUp($event)"
+    ></div>
+
     <header class="room-overlay__header">
       <div class="room-overlay__heading">
         <span class="room-overlay__icon" aria-hidden="true">{{

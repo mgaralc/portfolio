@@ -29,9 +29,14 @@ import { CameraController } from './camera-controller';
 import { RoomMarkerLayer } from './room-markers';
 import {
   DEFAULT_CAMERA_TARGET,
+  FOCUS_BACK_MOBILE,
   FOCUS_MIN_DISTANCE,
+  FOCUS_UP_MOBILE,
+  MOBILE_MAX_WIDTH,
   ORBIT_MIN_DISTANCE,
+  ROOM_FOCUS_DISTANCE,
   SPHERE_RADIUS,
+  STRUCTURE_LOOKAT_LIFT,
   STRUCTURE_SURFACE_OFFSET,
 } from './constants';
 import {
@@ -48,7 +53,7 @@ import {
   TREE_MODELS,
   ZONE_MODELS,
 } from './decorations/zone-models';
-import type { Room } from '../rooms/room.model';
+import type { Room, RoomCameraTarget } from '../rooms/room.model';
 
 export interface SceneEngineCallbacks {
   onRoomSelected: (room: Room) => void;
@@ -333,9 +338,47 @@ export class SceneEngine {
     // Hide this zone's own floating label while we're inside it - it would
     // otherwise sit in the middle of the focused view over the structure.
     this.markerLayer.setHiddenRoom(room.id);
-    this.cameraController.flyTo(this.camera, this.controls, room.cameraTarget, () =>
-      this.callbacks.onRoomSelected(room)
+    this.cameraController.flyTo(
+      this.camera,
+      this.controls,
+      this.focusTargetFor(room),
+      () => this.callbacks.onRoomSelected(room)
     );
+  }
+
+  private isMobileLayout(): boolean {
+    return window.matchMedia(`(max-width: ${MOBILE_MAX_WIDTH}px)`).matches;
+  }
+
+  /**
+   * The viewpoint to fly to when a zone is opened. Desktop uses the room's
+   * pre-computed target (side-panned to clear the right-hand panel). On phones
+   * the overlay is a bottom sheet, so we instead frame the zone centered, pulled
+   * further back (to fit the narrow portrait view) and pushed UP the surface
+   * normal so the structure sits in the visible top half above the sheet.
+   */
+  private focusTargetFor(room: Room): RoomCameraTarget {
+    if (!this.isMobileLayout()) return room.cameraTarget;
+
+    const m = room.markerPosition;
+    const len = Math.hypot(m.x, m.y, m.z) || 1;
+    const n = { x: m.x / len, y: m.y / len, z: m.z / len };
+    const f = surfaceFront(m);
+    const back = FOCUS_BACK_MOBILE;
+    const up = FOCUS_UP_MOBILE;
+    return {
+      position: {
+        x: m.x + n.x * ROOM_FOCUS_DISTANCE + f.x * back - n.x * up,
+        y: m.y + n.y * ROOM_FOCUS_DISTANCE + f.y * back - n.y * up,
+        z: m.z + n.z * ROOM_FOCUS_DISTANCE + f.z * back - n.z * up,
+      },
+      lookAt: {
+        x: m.x + n.x * STRUCTURE_LOOKAT_LIFT - n.x * up,
+        y: m.y + n.y * STRUCTURE_LOOKAT_LIFT - n.y * up,
+        z: m.z + n.z * STRUCTURE_LOOKAT_LIFT - n.z * up,
+      },
+      up: n,
+    };
   }
 
   /** Shows only the given zone's reveal-on-enter detail props (null = hide all). */
