@@ -12,3 +12,102 @@
   height: 100%;
   display: block;
 }
+
+.scene-intro {
+  position: absolute;
+  left: 2.75rem;
+  bottom: 2.75rem;
+  z-index: 5;
+  max-width: 22rem;
+  pointer-events: none; // let drags pass through to the canvas
+  color: #eef0f6;
+  font-family: system-ui, sans-serif;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.65);
+  animation: intro-in 1s ease 0.35s both;
+}
+
+.scene-intro__eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: #93b9ff;
+}
+
+.scene-intro__name {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.scene-intro__role {
+  margin: 0.55rem 0 0;
+  font-size: 1rem;
+  opacity: 0.78;
+}
+
+.scene-intro__hint {
+  margin: 1.5rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  opacity: 0.62;
+}
+
+.scene-intro__hint span {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.scene-intro__hint span::before {
+  content: '';
+  width: 20px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.scene-intro__cv {
+  pointer-events: auto; // clickable even though the hero ignores pointer events
+  display: inline-flex;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #061018;
+  text-decoration: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #9fe0ff, #6db8ff);
+  box-shadow: 0 6px 22px rgba(80, 150, 255, 0.45);
+  transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    box-shadow: 0 10px 30px rgba(80, 150, 255, 0.6);
+  }
+}
+
+@keyframes intro-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .scene-intro {
+    left: 1.25rem;
+    bottom: 1.25rem;
+    max-width: 16rem;
+  }
+}

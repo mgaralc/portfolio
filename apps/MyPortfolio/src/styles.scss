@@ -5,5 +5,10 @@ body {
   margin: 0;
   height: 100%;
   overflow: hidden;
+  /* Deep-space background so there's no white flash before the 3D scene paints. */
+  background: #05060f;
+  color: #eef0f6;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 

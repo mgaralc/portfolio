@@ -19,6 +19,8 @@ export class CameraController {
   private readonly toPosition = new THREE.Vector3();
   private readonly fromTarget = new THREE.Vector3();
   private readonly toTarget = new THREE.Vector3();
+  private readonly fromUp = new THREE.Vector3();
+  private readonly toUp = new THREE.Vector3();
 
   get isAnimating(): boolean {
     return this.animating;
@@ -40,6 +42,12 @@ export class CameraController {
     );
     this.fromTarget.copy(controls.target);
     this.toTarget.set(target.lookAt.x, target.lookAt.y, target.lookAt.z);
+    this.fromUp.copy(camera.up);
+    if (target.up) {
+      this.toUp.set(target.up.x, target.up.y, target.up.z).normalize();
+    } else {
+      this.toUp.set(0, 1, 0);
+    }
     this.elapsed = 0;
     this.animating = true;
     this.onDone = onDone ?? null;
@@ -60,6 +68,9 @@ export class CameraController {
 
     camera.position.lerpVectors(this.fromPosition, this.toPosition, eased);
     controls.target.lerpVectors(this.fromTarget, this.toTarget, eased);
+    // Roll the camera so its up tracks the focused zone's surface normal,
+    // keeping the structure upright on screen (and back to world up on return).
+    camera.up.lerpVectors(this.fromUp, this.toUp, eased).normalize();
 
     if (t >= 1) {
       this.animating = false;

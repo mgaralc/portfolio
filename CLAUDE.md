@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-Personal portfolio website ("Este es mi proyecto de portfolio como desarrollador Web"). It is an Nx monorepo containing a single Angular 20 application plus its Playwright e2e suite. The app (`apps/MyPortfolio`) is currently the default Nx/Angular scaffold (empty routes, `NxWelcome` placeholder component) — no portfolio-specific features have been built yet.
+Personal portfolio of Miguel García Alcalá (cybersecurity-focused software developer), built as an interactive 3D scene. It is an Nx monorepo containing a single Angular 20 application plus its Playwright e2e suite. The app (`apps/MyPortfolio`) renders a low-poly "planet" floating in space (Three.js via `three/webgpu`, WebGPU with WebGL2 fallback) with clickable zones (about / education / tech / experience / projects / contact); clicking a zone flies the camera in and opens a side-panel overlay with that zone's CV content. The 3D engine lives in `src/app/scene/` (`scene-engine.ts` is the orchestrator); CV content is data-driven in `src/app/rooms/rooms.data.ts`. Heavy visual effects are gated by a device quality tier (`scene/quality.ts`) so it stays smooth on mobile. See `DEPLOY.md` for deployment.
 
 Package manager is **pnpm** (`pnpm-workspace.yaml`, `pnpm-lock.yaml`) — do not use npm/yarn commands or lockfiles.
 

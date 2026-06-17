@@ -1,2 +1,24 @@
 <canvas #canvasRef class="scene-canvas"></canvas>
+
+@if (!focusedRoom()) {
+  <div class="scene-intro">
+    <p class="scene-intro__eyebrow">Portfolio interactivo</p>
+    <h1 class="scene-intro__name">Miguel García Alcalá</h1>
+    <p class="scene-intro__role">Ciberseguridad · Desarrollo de Software</p>
+    <p class="scene-intro__hint">
+      <span>Arrastra para girar el planeta</span>
+      <span>Pulsa una zona para explorarla</span>
+    </p>
+    <a
+      class="scene-intro__cv"
+      href="/CV_Miguel_Garcia.pdf"
+      target="_blank"
+      rel="noopener noreferrer"
+      download
+    >
+      Descargar CV ↓
+    </a>
+  </div>
+}
+
 <app-room-overlay [room]="focusedRoom()" (closed)="closeRoom()" />

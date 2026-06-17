@@ -4,9 +4,18 @@
     role="dialog"
     aria-modal="true"
     [attr.aria-label]="activeRoom.title"
+    [style.--accent]="accent()"
   >
     <header class="room-overlay__header">
-      <h2>{{ activeRoom.title }}</h2>
+      <div class="room-overlay__heading">
+        <span class="room-overlay__icon" aria-hidden="true">{{
+          activeRoom.icon
+        }}</span>
+        <div>
+          <h2>{{ activeRoom.title }}</h2>
+          <p class="room-overlay__summary">{{ activeRoom.summary }}</p>
+        </div>
+      </div>
       <button type="button" class="room-overlay__back" (click)="onClose()">
         Volver
       </button>
@@ -14,23 +23,92 @@
 
     <div class="room-overlay__body">
       @if (activeRoom.content.type === 'education') {
-        <dl class="education">
-          <dt>Institución</dt>
-          <dd>{{ activeRoom.content.institution }}</dd>
-          <dt>Título</dt>
-          <dd>{{ activeRoom.content.degree }}</dd>
-          <dt>Periodo</dt>
-          <dd>{{ activeRoom.content.period }}</dd>
-        </dl>
-        <p>{{ activeRoom.content.description }}</p>
+        <ul class="education-list">
+          @for (study of activeRoom.content.studies; track study.title) {
+            <li class="education-list__item">
+              <h3>{{ study.title }}</h3>
+              <span class="education-list__meta">
+                {{ study.school }}@if (study.period) { · {{ study.period }} }
+              </span>
+              <p>{{ study.description }}</p>
+            </li>
+          }
+        </ul>
       } @else if (activeRoom.content.type === 'tech-museum') {
-        <ul class="tech-list">
-          @for (tech of activeRoom.content.technologies; track tech.name) {
-            <li class="tech-list__item">
-              <span class="tech-list__name">{{ tech.name }}</span>
-              <span class="tech-list__level" [attr.data-level]="tech.level">{{
-                tech.level
-              }}</span>
+        @for (category of activeRoom.content.categories; track category.name) {
+          <h3 class="tech-category">{{ category.name }}</h3>
+          <ul class="tech-tags">
+            @for (item of category.items; track item) {
+              <li>{{ item }}</li>
+            }
+          </ul>
+        }
+      } @else if (activeRoom.content.type === 'projects') {
+        <ul class="projects-list">
+          @for (project of activeRoom.content.projects; track project.name) {
+            <li class="projects-list__item">
+              <h3>{{ project.name }}</h3>
+              <p>{{ project.description }}</p>
+              @if (project.link; as link) {
+                <a
+                  class="projects-list__link"
+                  [href]="link.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ link.label }} ↗
+                </a>
+              }
+            </li>
+          }
+        </ul>
+      } @else if (activeRoom.content.type === 'experience') {
+        <ul class="experience-list">
+          @for (role of activeRoom.content.roles; track role.company) {
+            <li class="experience-list__item">
+              <h3>{{ role.role }}</h3>
+              <p>{{ role.company }}</p>
+              <span class="experience-list__period">{{ role.period }}</span>
+              @if (role.description) {
+                <p class="experience-list__desc">{{ role.description }}</p>
+              }
+            </li>
+          }
+        </ul>
+      } @else if (activeRoom.content.type === 'about') {
+        <p class="about-subtitle">{{ activeRoom.content.subtitle }}</p>
+        <p>{{ activeRoom.content.bio }}</p>
+        <ul class="highlight-list">
+          @for (highlight of activeRoom.content.highlights; track highlight) {
+            <li>{{ highlight }}</li>
+          }
+        </ul>
+        <ul class="facts-list">
+          @for (fact of activeRoom.content.facts; track fact) {
+            <li>{{ fact }}</li>
+          }
+        </ul>
+      } @else if (activeRoom.content.type === 'contact') {
+        <ul class="contact-list">
+          @for (channel of activeRoom.content.channels; track channel.label) {
+            <li class="contact-list__item">
+              <span class="contact-list__label">{{ channel.label }}</span>
+              @if (channel.href) {
+                <a
+                  class="contact-list__value contact-list__value--link"
+                  [href]="channel.href"
+                  [target]="
+                    channel.href.startsWith('mailto:') ||
+                    channel.href.startsWith('tel:')
+                      ? null
+                      : '_blank'
+                  "
+                  rel="noopener noreferrer"
+                  >{{ channel.value }}</a
+                >
+              } @else {
+                <span class="contact-list__value">{{ channel.value }}</span>
+              }
             </li>
           }
         </ul>

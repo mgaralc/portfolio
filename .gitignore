@@ -44,3 +44,7 @@ Thumbs.db
 .github/instructions/nx.instructions.md
 
 .angular
+
+# Loose local-only files (the deployed CV lives in apps/MyPortfolio/public/)
+/CV_Miguel_Garcia.pdf
+/Captura de pantalla*.png
